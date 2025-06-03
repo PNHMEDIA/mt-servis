@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MT Servis Zlín - Objevte nové možnosti manipulační techniky</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            padding-top: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 15px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header.scrolled {
+            background: white;
+            color: #333;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            backdrop-filter: none;
+            border-bottom: none;
+            display: none;
+        }
+
+        .header.scrolled .logo,
+        .header.scrolled .nav-menu a {
+            color: #333;
+        }
+
+        .header.scrolled .price {
+            color: #333;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: #ddd;
+        }
+
+        .nav-menu a.active {
+            border-bottom: 2px solid #dc2626;
+        }
+
+        .nav-menu a.all-models-btn {
+            background: white;
+            color: #333;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .header.scrolled .nav-menu a.all-models-btn {
+            background: #f3f4f6;
+            color: #333;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .dealer-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .header.scrolled .dealer-link {
+            color: #333;
+        }
+
+        .hamburger {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .header.scrolled .hamburger {
+            color: #333;
+        }
+
+        /* Secondary Navigation (when scrolled) */
+        .secondary-nav {
+            background: white;
+            padding: 15px 0;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            z-index: 999;
+            transform: translateY(-150%);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .secondary-nav.show {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .secondary-nav .nav {
+            justify-content: flex-start;
+        }
+
+        .secondary-nav .logo {
+            color: #333;
+            margin-right: 40px;
+        }
+
+        .secondary-nav .nav-menu {
+            gap: 30px;
+        }
+
+        .secondary-nav .nav-menu a {
+            color: #333;
+        }
+
+        .price {
+            font-size: 18px;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .price-sub {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .header.scrolled .price-sub {
+            opacity: 0.6;
+        }
+
+        .up-arrow {
+            background: #000;
+            color: white;
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .up-arrow:hover {
+            background: #333;
+        }
+
+        /* Warranty Section */
+        .warranty-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 40px 60px;
+            background: white;
+        }
+
+        .warranty-badge {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .warranty-icon {
+            width: 50px;
+            height: 50px;
+            background: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .warranty-text h4 {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .warranty-text p {
+            font-size: 14px;
+            margin: 0;
+            color: #666;
+        }
+
+        .quality-badge {
+            background: #000;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .quality-badge h4 {
+            font-size: 12px;
+            margin: 0 0 5px 0;
+            font-weight: normal;
+        }
+
+        .stars {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .test-year {
+            font-size: 10px;
+            opacity: 0.8;
+        }
+
+        .cta-button {
+            background: #dc2626;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .cta-button:hover {
+            background: #b91c1c;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: url('https://i.postimg.cc/j2RGcDzd/Screenshot-2025-06-03-at-21-30-16.png') center/cover;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0 0 40px 40px;
+            margin-bottom: 40px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 100%);
+        }
+
+        .hero-content {
+            position: absolute;
+            bottom: 60px;
+            left: 60px;
+            right: 60px;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            color: white;
+        }
+
+        .hero-text h1 {
+            font-size: 64px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            line-height: 1;
+        }
+
+        .hero-text .price-info {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .hero-text .sub-price {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #1f2937;
+        }
+
+        /* Overview Section */
+        .overview {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .overview h2 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .overview-text {
+            font-size: 18px;
+            line-height: 1.8;
+            margin-bottom: 60px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+        }
+
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .spec-card {
+            text-align: center;
+        }
+
+        .spec-value {
+            font-size: 48px;
+            font-weight: 700;
+            color: #dc2626;
+            margin-bottom: 8px;
+        }
+
+        .spec-label {
+            font-size: 16px;
+            color: #666;
+        }
+
+        /* Leasing Section */
+        .leasing {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 80px 0;
+        }
+
+        .leasing-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .leasing-image {
+            background: url('https://i.postimg.cc/FKmg70mR/image.png') center/cover;
+            height: 400px;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .leasing-image::after {
+            content: 'HANGCHA';
+            position: absolute;
+            bottom: 40px;
+            left: 40px;
+            font-size: 48px;
+            font-weight: 800;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .leasing-text h3 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .leasing-features {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .leasing-features li {
+            padding: 8px 0;
+            font-size: 16px;
+        }
+
+        .leasing-features li::before {
+            content: '•';
+            color: #dc2626;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        /* Design Section */
+        .design {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .design-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .design-text h3 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .design-image img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        /* Technology Section */
+        .technology {
+            background: #f8fafc;
+            padding: 80px 0;
+        }
+
+        .tech-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .tech-header h3 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .tech-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .tech-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .tech-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .tech-card h4 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        /* Specifications Section */
+        .specifications {
+            background: #1f2937;
+            color: white;
+            padding: 80px 0;
+        }
+
+        .spec-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .spec-header h3 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .spec-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+            gap: 20px;
+        }
+
+        .spec-tab {
+            background: transparent;
+            border: 2px solid #374151;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .spec-tab.active {
+            background: white;
+            color: #1f2937;
+        }
+
+        .spec-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .spec-item {
+            background: #374151;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .spec-item h4 {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        .spec-item .value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .battery-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .battery-info h4 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .battery-image {
+            text-align: center;
+        }
+
+        .battery-image img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .safety-features {
+            margin-top: 40px;
+        }
+
+        .safety-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .safety-item {
+            font-size: 16px;
+            padding: 10px 0;
+        }
+
+        /* FAQ Section */
+        .faq {
+            background: white;
+            padding: 80px 0;
+        }
+
+        .faq h3 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .faq-list {
+            max-width: 800px;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 20px 0;
+        }
+
+        .faq-question {
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-question::after {
+            content: '▼';
+            font-size: 12px;
+            transition: transform 0.3s;
+        }
+
+        /* Downloads Section */
+        .downloads {
+            background: #1f2937;
+            color: white;
+            padding: 80px 0;
+        }
+
+        .downloads h3 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .download-card {
+            background: #374151;
+            padding: 20px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .download-info h4 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .download-meta {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        .download-btn {
+            background: #dc2626;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        /* Accessories Section */
+        .accessories {
+            background: white;
+            padding: 80px 0;
+        }
+
+        .accessories h3 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 40px;
+        }
+
+        .accessory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .accessory-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .accessory-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .accessory-content {
+            padding: 20px;
+        }
+
+        .accessory-category {
+            font-size: 12px;
+            color: #dc2626;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .accessory-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .accessory-description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .accessory-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1f2937;
+            color: white;
+            padding: 60px 0 30px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 60px;
+            margin-bottom: 40px;
+        }
+
+        .footer-cta h4 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .footer-cta p {
+            margin-bottom: 30px;
+            opacity: 0.8;
+        }
+
+        .footer-links {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+
+        .footer-column h5 {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .footer-column ul li a:hover {
+            opacity: 1;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 30px;
+            text-align: center;
+            font-size: 14px;
+            opacity: 0.6;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .social-links a:hover {
+            opacity: 1;
+        }
+
+        /* Color Selector */
+        .color-selector {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid white;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.orange {
+            background: #ea580c;
+        }
+
+        .color-option.blue {
+            background: #3b82f6;
+        }
+
+        .color-option.white {
+            background: #f8fafc;
+        }
+
+        .color-option.black {
+            background: #1f2937;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 30px;
+                bottom: 40px;
+                left: 30px;
+                right: 30px;
+            }
+
+            .hero-text h1 {
+                font-size: 48px;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+                gap: 15px;
+                width: 100%;
+            }
+
+            .hero-actions a {
+                text-align: center;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .warranty-section {
+                flex-direction: column;
+                gap: 30px;
+                padding: 30px;
+            }
+
+            .specs-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .footer-links {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .secondary-nav {
+                top: 70px;
+            }
+
+            .secondary-nav .nav-menu {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="#" class="logo">MT SERVIS</a>
+                <ul class="nav-menu">
+                    <li><a href="#">HANGCHA</a></li>
+                    <li><a href="#">ELEKTRICKÉ</a></li>
+                    <li><a href="#">DIESELOVÉ</a></li>
+                    <li><a href="#">PLYNOVÉ</a></li>
+                    <li><a href="#">SERVIS</a></li>
+                    <li><a href="#" class="all-models-btn">Všechny modely</a></li>
+                </ul>
+                <div class="nav-right">
+                    <a href="#" class="dealer-link">📍 Kontakt</a>
+                    <button class="hamburger">☰</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Secondary Navigation (appears when scrolled) -->
+    <nav class="secondary-nav">
+        <div class="container">
+            <div class="nav">
+                <a href="#" class="logo">HANGCHA VZV</a>
+                <ul class="nav-menu">
+                    <li><a href="#" class="active">Vlastnosti</a></li>
+                    <li><a href="#">Technologie</a></li>
+                    <li><a href="#">Specifikace</a></li>
+                    <li><a href="#">Servis</a></li>
+                    <li><a href="#">Reference</a></li>
+                    <li><a href="#">Kontakt</a></li>
+                </ul>
+                 
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>HANGCHA VZV</h1>
+                <div class="price-info">od 450.000 Kč*</div>
+                <div class="sub-price">včetně DPH</div>
+            </div>
+            <div class="hero-actions">
+                <a href="#" class="cta-button">Nezávazná poptávka</a>
+                <a href="#" class="btn-secondary">Obhlídka stroje</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Warranty Section -->
+    <section class="warranty-section">
+        <div class="warranty-badge">
+            <div class="warranty-icon">2</div>
+            <div class="warranty-text">
+                <h4>2 roky</h4>
+                <p>Záruka na stroj*</p>
+            </div>
+        </div>
+        <div class="quality-badge">
+            <h4>KVALITA</h4>
+            <div class="stars">★★★★★</div>
+            <div class="test-year">Ověřeno 2025</div>
+        </div>
+    </section>
+
+    <!-- Overview Section -->
+    <section class="overview">
+        <div class="container">
+            <h2>Objevte nové možnosti manipulační techniky</h2>
+            <p class="overview-text">
+                Vysokozdvižné vozíky HANGCHA představují novou éru efektivního skladování a manipulace. Naše elektrické vozíky kombinují vynikající výkon s ekonomickým provozem a nejmodernější technologií. Díky pokročilým Li-Ion bateriím a inovativnímu designu jsou HANGCHA vozíky ideální volbou pro moderní sklady a výrobní haly v České republice.
+            </p>
+            
+            <div class="specs-grid">
+                <div class="spec-card">
+                    <div class="spec-value">3.5 t</div>
+                    <div class="spec-label">max. nosnost</div>
+                </div>
+                <div class="spec-card">
+                    <div class="spec-value">6.5 m</div>
+                    <div class="spec-label">max. zdvih</div>
+                </div>
+                <div class="spec-card">
+                    <div class="spec-value">12 h</div>
+                    <div class="spec-label">doba provozu*</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Leasing Section -->
+    <section class="leasing">
+        <div class="container">
+            <div class="leasing-content">
+                <div class="leasing-image"></div>
+                <div class="leasing-text">
+                    <h3>Finanční řešení - Flexibilní možnosti pořízení!</h3>
+                    <ul class="leasing-features">
+                        <li>HANGCHA vozíky nyní s finančním leasingem od 12.000 Kč měsíčně**</li>
+                        <li>Možnost operativního leasingu s plným servisem</li>
+                        <li>Výhodné financování pro podnikatele a firmy</li>
+                        <li>Zajistíme kompletní servis během celé doby leasingu</li>
+                        <li>Možnost odkupu vozíku na konci leasingové smlouvy</li>
+                    </ul>
+                    <a href="#" class="cta-button">Požádat o nabídku!</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Design Section -->
+    <section class="design">
+        <div class="container">
+            <div class="design-content">
+                <div class="design-text">
+                    <h3>Výkon & Spolehlivost</h3>
+                    <p>Vozíky HANGCHA jsou navrženy pro maximální produktivitu a bezpečnost provozu. Nabízíme širokou škálu elektrických, dieselových a plynových vozíků s nosností od 1 do 10 tun. Moderní Li-Ion technologie zajišťuje dlouhou životnost baterie a rychlé nabíjení. Všechny vozíky jsou vybaveny pokročilými bezpečnostními systémy a ergonomickými kabinami pro pohodlí operátora.</p>
+                    <ul style="margin: 20px 0; list-style: none;">
+                        <li>• Certifikace CE a splnění všech bezpečnostních norem</li>
+                        <li>• Energeticky úsporné Li-Ion baterie s rychlým nabíjením</li>
+                        <li>• Nízké provozní náklady a jednoduché servísování</li>
+                    </ul>
+                    <a href="#" class="cta-button">Požádat o nabídku</a>
+                </div>
+                <div class="design-image">
+                    <img src="https://i.postimg.cc/j2RGcDzd/Screenshot-2025-06-03-at-21-30-16.png" alt="HANGCHA Vysokozdvižný vozík">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Color Section -->
+    <section class="design" style="background: #f8fafc;">
+        <div class="container">
+            <div style="position: relative;">
+                <img src="https://i.postimg.cc/j2RGcDzd/Screenshot-2025-06-03-at-21-30-16.pngp" alt="HANGCHA Oranžový" style="width: 100%; height: 500px; object-fit: cover; border-radius: 12px;">
+                <div style="position: absolute; bottom: 40px; left: 40px; color: white;">
+                    <h3 style="font-size: 36px; font-weight: 700;">HANGCHA Oranžová</h3>
+                </div>
+                <div class="color-selector">
+                    <div class="color-option orange"></div>
+                    <div class="color-option blue"></div>
+                    <div class="color-option white"></div>
+                    <div class="color-option black"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Safety Design Section -->
+    <section class="design">
+        <div class="container">
+            <div class="design-content">
+                <div class="design-text">
+                    <h3>Bezpečnost na prvním místě</h3>
+                    <p>Všechny vozíky HANGCHA jsou vybaveny nejmodernějšími bezpečnostními systémy včetně výstražných světel LED, akustických signálů, ochranných rámů a stabilizačních systémů. Ergonomické kabiny poskytují operátorovi maximální komfort a přehled během práce.</p>
+                </div>
+                <div class="design-image">
+                    <img src="https://i.postimg.cc/FKmg70mR/image.png" alt="Bezpečnostní prvky HANGCHA">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Section -->
+    <section class="technology">
+        <div class="container">
+            <div class="tech-header">
+                <h3>Technologie, která posouvá efektivitu kupředu</h3>
+            </div>
+            <div class="tech-cards">
+                <div class="tech-card">
+                    <img src="https://i.postimg.cc/FKmg70mR/image.png" alt="Li-Ion baterie">
+                    <h4>Li-Ion baterie</h4>
+                    <p>Moderní lithium-iontové baterie zajišťují dlouhou provozní dobu, rychlé nabíjení a dlouhou životnost bez nutnosti údržby.</p>
+                </div>
+                <div class="tech-card">
+                    <img src="https://i.postimg.cc/FKmg70mR/image.png" alt="Servis">
+                    <h4>Komplexní servis</h4>
+                    <p>Zajišťujeme profesionální servis s osmi servisními vozidly, technické kontroly a revize po celé České republice.</p>
+                </div>
+                <div class="tech-card">
+                    <img src="https://i.postimg.cc/FKmg70mR/image.png" alt="Školení">
+                    <h4>Školení operátorů</h4>
+                    <p>Poskytujeme odborná školení pro obsluhu vysokozdvižných vozíků a vydáváme průkazy pro řidiče VZV.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Specifications Section -->
+    <section class="specifications">
+        <div class="container">
+            <div class="spec-header">
+                <h3>Technické specifikace</h3>
+                <p>HANGCHA vozíky jsou dostupné v různých provedeních a nosnostech pro všechny typy skladových a výrobních operací.</p>
+            </div>
+            
+            <div class="spec-tabs">
+                <button class="spec-tab active">Elektrické</button>
+                <button class="spec-tab">Dieselové</button>
+                <button class="spec-tab">Plynové</button>
+            </div>
+            
+            <div class="spec-grid">
+                <div class="spec-item">
+                    <h4>Nosnost až</h4>
+                    <div class="value">3.5 t</div>
+                </div>
+                <div class="spec-item">
+                    <h4>Zdvih až</h4>
+                    <div class="value">6.5 m</div>
+                </div>
+                <div class="spec-item">
+                    <h4>Rychlost zdvihu</h4>
+                    <div class="value">0.5 m/s</div>
+                </div>
+                <div class="spec-item">
+                    <h4>Rychlost jízdy</h4>
+                    <div class="value">20 km/h</div>
+                </div>
+            </div>
+
+            <div class="battery-section">
+                <div class="battery-info">
+                    <h4>Li-Ion technologie</h4>
+                    <p>Pokročilé lithium-iontové baterie HANGCHA poskytují výjimečný výkon a spolehlivost. Nabízejí rychlé nabíjení, dlouhou životnost a prakticky bezúdržbový provoz.</p>
+                </div>
+                <div class="battery-image">
+                    <img src="https://i.postimg.cc/FKmg70mR/image.png" alt="Li-Ion baterie HANGCHA">
+                </div>
+            </div>
+
+            <div class="safety-features">
+                <h4>Bezpečnostní prvky</h4>
+                <div class="safety-grid">
+                    <div class="safety-item">Ochranný rám kabiny ROPS/FOPS</div>
+                    <div class="safety-item">LED výstražná světla</div>
+                    <div class="safety-item">Akustické výstražné signály</div>
+                    <div class="safety-item">Systém stability vozíku</div>
+                    <div class="safety-item">Brzdný systém s rekuperací</div>
+                    <div class="safety-item">Ergonomické ovládání</div>
+                    <div class="safety-item">Přenosová bezpečnostní čidla</div>
+                    <div class="safety-item">Automatické brždění při nákonu</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq">
+        <div class="container">
+            <h3>Často kladené otázky</h3>
+            <p>Připravili jsme odpovědi na nejčastější dotazy týkající se našich vysokozdvižných vozíků a služeb.</p>
+            
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">Jaká je životnost Li-Ion baterie ve vozících HANGCHA?</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Poskytujete technické kontroly vysokozdvižných vozíků?</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Je možné pronájem vozíků na krátkodobé projekty?</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Jak dlouho trvá servisní zásah?</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Poskytujete školení pro řidiče vysokozdvižných vozíků?</div>
+                </div>
+            </div>
+            
+            <a href="#" class="cta-button" style="margin-top: 30px; display: inline-block;">Všechny FAQ</a>
+        </div>
+    </section>
+
+    <!-- Downloads Section -->
+    <section class="downloads">
+        <div class="container">
+            <h3>Ke stažení</h3>
+            <p>Všechny důležité dokumenty a materiály pro vaše HANGCHA vozíky.</p>
+            
+            <div class="download-grid">
+                <div class="download-card">
+                    <div class="download-info">
+                        <h4>Katalog HANGCHA elektrické</h4>
+                        <div class="download-meta">PDF | 2.5 MB</div>
+                    </div>
+                    <a href="#" class="download-btn">↓</a>
+                </div>
+                <div class="download-card">
+                    <div class="download-info">
+                        <h4>Technické specifikace</h4>
+                        <div class="download-meta">PDF | 1.8 MB</div>
+                    </div>
+                    <a href="#" class="download-btn">↓</a>
+                </div>
+                <div class="download-card">
+                    <div class="download-info">
+                        <h4>Ceník 2025</h4>
+                        <div class="download-meta">PDF | 0.9 MB</div>
+                    </div>
+                    <a href="#" class="download-btn">↓</a>
+                </div>
+                <div class="download-card">
+                    <div class="download-info">
+                        <h4>Servisní podmínky</h4>
+                        <div class="download-meta">PDF | 0.7 MB</div>
+                    </div>
+                    <a href="#" class="download-btn">↓</a>
+                </div>
+                <div class="download-card">
+                    <div class="download-info">
+                        <h4>Leasing a financování</h4>
+                        <div class="download-meta">PDF | 1.2 MB</div>
+                    </div>
+                    <a href="#" class="download-btn">↓</a>
+                </div>
+            </div>
+            
+            <a href="#" class="cta-button" style="margin-top: 30px; display: inline-block;">Všechny materiály</a>
+        </div>
+    </section>
+
+    <!-- Accessories Section -->
+    <section class="accessories">
+        <div class="container">
+            <h3>Příslušenství a náhradní díly</h3>
+            
+            <div class="accessory-grid">
+                <div class="accessory-card">
+                    <img src="https://i.postimg.cc/FKmg70mR/image.png" alt="Palety">
+                    <div class="accessory-content">
+                        <div class="accessory-category">Manipulace</div>
+                        <h4 class="accessory-title">Paletové vidle</h4>
+                        <p class="accessory-description">Různé délky a typy vidlic pro optimální manipulaci s různými typy palet a materiálů</p>
+                        <div class="accessory-price">od 15.000 Kč*</div>
+                    </div>
+                </div>
+                <div class="accessory-card">
+                    <img src="https://i.postimg.cc/FKmg70mR/image.png" alt="Baterie">
+                    <div class="accessory-content">
+                        <div class="accessory-category">Napájení</div>
+                        <h4 class="accessory-title">Li-Ion baterie</h4>
+                        <p class="accessory-description">Náhradní a doplňkové Li-Ion baterie pro nepřetržitý provoz vašich vozíků</p>
+                        <div class="accessory-price">85.000 Kč*</div>
+                    </div>
+                </div>
+                <div class="accessory-card">
+                    <img src="https://i.postimg.cc/FKmg70mR/image.png" alt="Nabíječka">
+                    <div class="accessory-content">
+                        <div class="accessory-category">Nabíjení</div>
+                        <h4 class="accessory-title">Rychlonabíječka</h4>
+                        <p class="accessory-description">Profesionální nabíječky pro Li-Ion baterie s možností rychlého dobíjení během přestávek</p>
+                        <div class="accessory-price">35.000 Kč*</div>
+                    </div>
+                </div>
+                <div class="accessory-card">
+                    <img src="https://i.postimg.cc/FKmg70mR/image.png" alt="Servis">
+                    <div class="accessory-content">
+                        <div class="accessory-category">Servis</div>
+                        <h4 class="accessory-title">Servisní balíček</h4>
+                        <p class="accessory-description">Kompletní servisní balíček včetně pravidelných kontrol, výměny dílů a technických prohlídek</p>
+                        <div class="accessory-price">25.000 Kč/rok*</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer CTA -->
+    <section class="hero" style="padding: 60px 0;">
+        <div class="container">
+            <div style="text-align: center;">
+                <h3 style="font-size: 48px; margin-bottom: 20px; color: white;">Posuňte svůj sklad na novou úroveň</h3>
+                <p style="font-size: 18px; margin-bottom: 40px; color: white;">Objevte výhody vozíků HANGCHA ještě dnes. Kontaktujte nás pro nezávaznou poptávku.</p>
+                <a href="#" class="cta-button">Nezávazná poptávka</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-cta">
+                    <h4>Zůstaňte informováni</h4>
+                    <p>Přihlaste se k odběru novinek a buďte jako první informováni o našich produktech a službách.</p>
+                    <a href="#" class="cta-button">Přihlásit k odběru</a>
+                    <div class="social-links">
+                        <a href="#">Facebook</a>
+                        <a href="#">LinkedIn</a>
+                        <a href="#">YouTube</a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h5>Produkty</h5>
+                        <ul>
+                            <li><a href="#">HANGCHA Elektrické</a></li>
+                            <li><a href="#">HANGCHA Dieselové</a></li>
+                            <li><a href="#">HANGCHA Plynové</a></li>
+                            <li><a href="#">Terénní vozíky</a></li>
+                            <li><a href="#">Nízkozdvižné vozíky</a></li>
+                            <li><a href="#">Paletové vozíky</a></li>
+                            <li><a href="#">Příslušenství</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h5>MT Servis Zlín</h5>
+                        <ul>
+                            <li><a href="#">O společnosti</a></li>
+                            <li><a href="#">Kontakt</a></li>
+                            <li><a href="#">Poptávka</a></li>
+                            <li><a href="#">Ceníky</a></li>
+                            <li><a href="#">Reference</a></li>
+                            <li><a href="#">Kariéra</a></li>
+                            <li><a href="#">Pobočky</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h5>Služby</h5>
+                        <ul>
+                            <li><a href="#">Prodej a pronájem</a></li>
+                            <li><a href="#">Servis a údržba</a></li>
+                            <li><a href="#">Technické kontroly</a></li>
+                            <li><a href="#">Revize LPG</a></li>
+                            <li><a href="#">Školení řidičů</a></li>
+                            <li><a href="#">Leasing</a></li>
+                            <li><a href="#">FAQ</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>24/7 Servisní linka: +420 608 731 297</p>
+                <p>obchod@mtserviszlin.cz | Šarovy 1, 763 51 Bohuslavice u Zlína</p>
+                <p>© MT Servis Zlín 2025</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navigation scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('.header');
+            const secondaryNav = document.querySelector('.secondary-nav');
+            
+            if (window.scrollY > 200) {
+                header.classList.add('scrolled');
+                secondaryNav.classList.add('show');
+            } else {
+                header.classList.remove('scrolled');
+                secondaryNav.classList.remove('show');
+            }
+        });
+
+        // Up arrow scroll to top
+        document.querySelector('.up-arrow').addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Simple interactivity for color selector
+        document.querySelectorAll('.color-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.color-option').forEach(opt => opt.style.border = '3px solid white');
+                this.style.border = '3px solid #dc2626';
+            });
+        });
+
+        // FAQ accordion functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', function() {
+                const arrow = this.querySelector('::after');
+                // Toggle arrow rotation would be handled with additional CSS classes
+            });
+        });
+
+        // Spec tabs functionality
+        document.querySelectorAll('.spec-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.spec-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
